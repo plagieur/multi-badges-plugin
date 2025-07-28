@@ -2,6 +2,6 @@
   "name": "MultiBadges",
   "description": "Ajoute plusieurs badges Discord en client‑side (Staff, Partner, Early, etc).",
   "version": "1.0.0",
-  "authors": ["plagieur"],
+  "author": "plagieur",
   "main": "index.js"
 }
