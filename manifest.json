@@ -1,7 +1,13 @@
 {
   "name": "MultiBadges",
-  "description": "Ajoute plusieurs badges Discord en frontend (Staff, Partner, Early, etc).",
-  "version": "1.0.0",
-  "author": "plagieur",
-  "main": "index.js"
+  "description": "Ajoute plusieurs badges Discord en client-side (Staff, Partner, Early, etc).",
+  "authors": [
+    {
+      "name": "plagieur"
+    }
+  ],
+  "main": "index.js",
+  "vendetta": {
+    "icon": "ic_badge_24px"
+  }
 }
