@@ -1,11 +1,13 @@
 import { findByProps } from "@vendetta/metro";
 import { storage } from "@vendetta/plugin";
 import { showToast } from "@vendetta/ui/toasts";
+import { React } from "@vendetta/metro/common";
+import { View, Text, ScrollView, Switch } from "react-native";
 
 const UserStore = findByProps("getCurrentUser");
 const UserActions = findByProps("forceUpdateUser");
 
-const BADGES = {
+const BADGES: Record<string, number> = {
   "Discord Staff": 1 << 0,
   "Partner": 1 << 1,
   "HypeSquad Events": 1 << 2,
@@ -18,17 +20,18 @@ const BADGES = {
   "Verified Bot Developer": 1 << 17,
 };
 
-let interval = null;
+let interval: ReturnType<typeof setInterval> | null = null;
 
-function applyBadges() {
-  const user = UserStore.getCurrentUser();
+function applyBadges(): void {
+  const user = UserStore.getCurrentUser?.();
   if (!user) return;
 
   user.flags = 0;
   for (const badge of storage.selectedBadges || []) {
     user.flags |= BADGES[badge] || 0;
   }
-  UserActions.forceUpdateUser(user.id);
+
+  UserActions.forceUpdateUser?.(user.id);
 }
 
 export default {
@@ -36,9 +39,10 @@ export default {
     if (!storage.selectedBadges) storage.selectedBadges = [];
 
     interval = setInterval(() => {
-      const user = UserStore.getCurrentUser();
+      const user = UserStore.getCurrentUser?.();
       if (user) {
-        clearInterval(interval);
+        clearInterval(interval!);
+        interval = null;
         applyBadges();
         showToast(`✅ ${storage.selectedBadges.length} badge(s) appliqué(s)`, "success");
       }
@@ -46,44 +50,47 @@ export default {
   },
 
   onUnload: () => {
-    clearInterval(interval);
-    const user = UserStore.getCurrentUser();
+    if (interval) clearInterval(interval);
+
+    const user = UserStore.getCurrentUser?.();
     if (!user) return;
 
     for (const flag of Object.values(BADGES)) {
       user.flags &= ~flag;
     }
-    UserActions.forceUpdateUser(user.id);
+
+    UserActions.forceUpdateUser?.(user.id);
     showToast("❌ Tous les badges désactivés", "default");
   },
 
   settings: {
-    getSettingsPanel: () => {
-      const React = require("react");
-      const { View, Text, ScrollView, Switch } = require("react-native");
-
-      return React.createElement(
-        ScrollView,
-        { style: { padding: 15 } },
-        ...Object.entries(BADGES).map(([name]) =>
-          React.createElement(
-            View,
-            { key: name, style: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 15 } },
-            React.createElement(Text, { style: { fontSize: 16 } }, name),
-            React.createElement(Switch, {
-              value: storage.selectedBadges?.includes(name),
-              onValueChange: (value) => {
+    getSettingsPanel: () => (
+      <ScrollView style={{ padding: 15 }}>
+        {Object.entries(BADGES).map(([name]) => (
+          <View
+            key={name}
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>{name}</Text>
+            <Switch
+              value={storage.selectedBadges?.includes(name)}
+              onValueChange={(value: boolean) => {
                 if (value) {
                   storage.selectedBadges = [...(storage.selectedBadges || []), name];
                 } else {
-                  storage.selectedBadges = storage.selectedBadges?.filter(b => b !== name);
+                  storage.selectedBadges = storage.selectedBadges?.filter((b: string) => b !== name);
                 }
                 applyBadges();
-              },
-            })
-          )
-        )
-      );
-    },
+              }}
+            />
+          </View>
+        ))}
+      </ScrollView>
+    ),
   },
 };
