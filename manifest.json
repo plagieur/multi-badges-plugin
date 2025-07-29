@@ -1,15 +1,15 @@
 {
-  "name": "MultiBadges",
-  "description": "Ajoute plusieurs badges Discord en client-side (Staff, Partner, Early, etc).",
-  "authors": [
-    {
-      "name": "plagieur"
+    "name": "MultiBadges",
+    "description": "Ajoute plusieurs badges Discord en client-side (Staff, Partner, Early, etc).",
+    "authors": [
+        {
+            "name": "plagieur"
+        }
+    ],
+    "main": "https://plagieur.github.io/multi-badges-plugin/index.tsx",
+    "version": "1.0.0",
+    "id": "multi-badges-larp-plugin",
+    "vendetta": {
+        "icon": "ic_badge_24px"
     }
-  ],
-  "main": "https://plagieur.github.io/multi-badges-plugin/index.tsx",
-  "version": "1.0.0",
-  "id": "multi-badges-larp-plugin",
-  "vendetta": {
-    "icon": "ic_badge_24px"
-  }
 }
