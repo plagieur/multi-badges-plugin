@@ -7,7 +7,7 @@ import { View, Text, ScrollView, Switch } from "react-native";
 const UserStore = findByProps("getCurrentUser");
 const UserActions = findByProps("forceUpdateUser");
 
-const BADGES: Record<string, number> = {
+const BADGES = {
   "Discord Staff": 1 << 0,
   "Partner": 1 << 1,
   "HypeSquad Events": 1 << 2,
@@ -20,9 +20,9 @@ const BADGES: Record<string, number> = {
   "Verified Bot Developer": 1 << 17,
 };
 
-let interval: ReturnType<typeof setInterval> | null = null;
+let interval = null;
 
-function applyBadges(): void {
+function applyBadges() {
   const user = UserStore.getCurrentUser?.();
   if (!user) return;
 
@@ -41,7 +41,7 @@ export default {
     interval = setInterval(() => {
       const user = UserStore.getCurrentUser?.();
       if (user) {
-        clearInterval(interval!);
+        clearInterval(interval);
         interval = null;
         applyBadges();
         showToast(`✅ ${storage.selectedBadges.length} badge(s) appliqué(s)`, "success");
@@ -64,33 +64,36 @@ export default {
   },
 
   settings: {
-    getSettingsPanel: () => (
-      <ScrollView style={{ padding: 15 }}>
-        {Object.entries(BADGES).map(([name]) => (
-          <View
-            key={name}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: 15,
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>{name}</Text>
-            <Switch
-              value={storage.selectedBadges?.includes(name)}
-              onValueChange={(value: boolean) => {
+    getSettingsPanel: () =>
+      React.createElement(
+        ScrollView,
+        { style: { padding: 15 } },
+        ...Object.entries(BADGES).map(([name]) =>
+          React.createElement(
+            View,
+            {
+              key: name,
+              style: {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 15,
+              },
+            },
+            React.createElement(Text, { style: { fontSize: 16 } }, name),
+            React.createElement(Switch, {
+              value: storage.selectedBadges?.includes(name),
+              onValueChange: (value) => {
                 if (value) {
                   storage.selectedBadges = [...(storage.selectedBadges || []), name];
                 } else {
-                  storage.selectedBadges = storage.selectedBadges?.filter((b: string) => b !== name);
+                  storage.selectedBadges = storage.selectedBadges?.filter((b) => b !== name);
                 }
                 applyBadges();
-              }}
-            />
-          </View>
-        ))}
-      </ScrollView>
-    ),
+              },
+            })
+          )
+        )
+      ),
   },
 };
