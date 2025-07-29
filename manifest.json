@@ -6,7 +6,7 @@
       "name": "plagieur"
     }
   ],
-  "main": "index.tsx",
+  "main": "https://plagieur.github.io/multi-badges-plugin/index.tsx",
   "version": "1.0.0",
   "id": "multi-badges-larp-plugin",
   "vendetta": {
