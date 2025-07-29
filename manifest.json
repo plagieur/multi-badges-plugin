@@ -6,7 +6,9 @@
       "name": "plagieur"
     }
   ],
-  "main": "index.js",
+  "main": "index.tsx",
+  "version": "1.0.0",
+  "id": "multi-badges-larp-plugin",
   "vendetta": {
     "icon": "ic_badge_24px"
   }
